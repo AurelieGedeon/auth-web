@@ -1,15 +1,20 @@
 import { useState } from "react";
+import bcrypt from "bcryptjs";
+
+const salt = "$2b$10$m1jsCn1608WTWXm98bshC.";
+
 export default function Signup({ setToken, setIsUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
+    const hashedPassword = bcrypt.hashSync(password, salt);
     fetch("http://localhost:3001/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password: hashedPassword }),
     })
       .then((res) => res.json())
       .then((data) => setToken(data.token))
@@ -17,7 +22,7 @@ export default function Signup({ setToken, setIsUser }) {
   };
   return (
     <>
-      <h1> Login</h1>
+      <h1> Sign Up</h1>
       <form onSubmit={handleSubmit}>
         <label>
           Email:
@@ -37,10 +42,10 @@ export default function Signup({ setToken, setIsUser }) {
           />
         </label>
         <br />
-        <input type="submit" value="Login" />
+        <input type="submit" value="Sign Up" />
       </form>
       <br />
-      <button onClick={() => setIsUser(true)}>Sign Up</button>
+      <button onClick={() => setIsUser(true)}>Login</button>
     </>
   );
 }
