@@ -1,21 +1,46 @@
+import { useState } from "react";
 export default function Signup({ setToken, setIsUser }) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    fetch("http://localhost:3001/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    })
+      .then((res) => res.json())
+      .then((data) => setToken(data.token))
+      .catch(alert);
+  };
   return (
     <>
-      <h1> Sign Up</h1>
-      <form>
+      <h1> Login</h1>
+      <form onSubmit={handleSubmit}>
         <label>
           Email:
-          <input type="email" />
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
         </label>
         <br />
         <label>
           Password:
-          <input type="password" />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </label>
         <br />
-        <input type="submit" value="Sign up" />
+        <input type="submit" value="Login" />
       </form>
-      <button>Login</button>
+      <br />
+      <button onClick={() => setIsUser(true)}>Sign Up</button>
     </>
   );
 }
